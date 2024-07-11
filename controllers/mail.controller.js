@@ -23,25 +23,23 @@ const transporter = nodemailer.createTransport(mailOptions);
 
 export const sendEmail = async (req, res) => {
     try {
-      const { firstName, lastName, phone, email, subject, message } = req.body;
-
-      console.log({mailOptions})
+      const { fullName, email, companyName, service, message } = req.body;
 
       const templatePath = path.join(__dirname, '../mails', 'contact.ejs');
 
       // Render the EJS template with data
       const html = await ejs.renderFile(templatePath, {
-        firstName,
-        lastName,
-        phone,
+        fullName,
+        companyName,
         email,
+        service,
         message
       });
       
       transporter.sendMail({
         from: process.env.SMTP_FROM, 
         to: email,
-        subject: subject,
+        subject: `Service - ${service}`,
         html: html
         }, (error, info) => {
             if (error) {
