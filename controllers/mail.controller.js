@@ -1,5 +1,11 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import ejs from 'ejs';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -20,12 +26,23 @@ export const sendEmail = async (req, res) => {
       const { firstName, lastName, phone, email, subject, message } = req.body;
 
       console.log({mailOptions})
+
+      const templatePath = path.join(__dirname, '../mails', 'contact.ejs');
+
+      // Render the EJS template with data
+      const html = await ejs.renderFile(templatePath, {
+        firstName,
+        lastName,
+        phone,
+        email,
+        message
+      });
       
       transporter.sendMail({
         from: process.env.SMTP_FROM, 
         to: email,
         subject: subject,
-        text: message
+        html: html
         }, (error, info) => {
             if (error) {
                 console.error(error);
