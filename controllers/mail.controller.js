@@ -25,6 +25,8 @@ export const sendEmail = async (req, res) => {
     try {
       const { fullName, email, companyName, service, message } = req.body;
 
+      console.log({fullName, email, companyName, service, message})
+
       const templatePath = path.join(__dirname, '../mails', 'contact.ejs');
 
       // Render the EJS template with data
@@ -38,7 +40,7 @@ export const sendEmail = async (req, res) => {
       
       transporter.sendMail({
         from: process.env.SMTP_FROM, 
-        to: email,
+        to: process.env.SMTP_TO,
         subject: `Service - ${service}`,
         html: html
         }, (error, info) => {
